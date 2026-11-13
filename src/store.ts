@@ -1,11 +1,12 @@
 import { computed, signal } from "@preact/signals";
-import { bootstrap, ApiError, putProduct, type Boot } from "./api";
+import { bootstrap, ApiError, putProduct, putGroup, type Boot } from "./api";
 import { compare, type Data, type Pick } from "./lib/compare";
+import { applyOverrides, type GroupKey } from "./lib/habits";
 import { haptic } from "./tg";
 
 export type Tab = "home" | "catalog" | "cart" | "profile";
 export type PackView = { mode: "single"; chain: string } | { mode: "mix" };
-export type View = { tab: Tab; cat?: number; where?: boolean; pack?: PackView };
+export type View = { tab: Tab; cat?: number; where?: boolean; pack?: PackView; habits?: boolean; habitGroup?: GroupKey; profileSub?: "notify" | "history" | "shops" | "about" };
 
 const CACHE_KEY = "ssa:boot:v1";
 export const boot = signal<Boot | null>(null);
@@ -24,7 +25,8 @@ export const result = computed(() => (data.value ? compare(data.value, picks.val
 export const pickMap = computed(() => new Map(picks.value.map((p) => [p.catalog_id, p])));
 
 function apply(b: Boot): void {
-  boot.value = b;
+  const habits = b.habits ? applyOverrides(b.habits, b.groups) : b.habits;
+  boot.value = { ...b, habits, groups: b.groups ?? {} };
   picks.value = b.products;
   status.value = "ready";
 }
@@ -73,3 +75,12 @@ export function setPick(id: number, qty: number, brand?: string | null, rule?: n
 }
 
 export const go = (v: View): void => { view.value = v; window.scrollTo(0, 0); };
+
+export function setGroup(id: number, grp: GroupKey): void {
+  const b = boot.value;
+  if (!b?.habits) return;
+  const groups = { ...(b.groups ?? {}), [String(id)]: grp };
+  boot.value = { ...b, groups, habits: applyOverrides(b.habits, { [String(id)]: grp }) };
+  haptic();
+  void putGroup(id, grp).catch(() => { flash("Не удалось сохранить, попробуйте ещё раз"); void load(true); });
+}

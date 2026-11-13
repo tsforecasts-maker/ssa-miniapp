@@ -181,3 +181,36 @@ main { padding: 0 14px 150px; max-width: 560px; margin: 0 auto; }
 .pack-cta-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; text-align: left; }
 .pack-cta-go { flex: none; }
 .pack-cta.done { text-align: center; font-weight: 700; color: var(--green-d); background: var(--mint); border-radius: 14px; margin: 0 14px 8px; padding: 13px 18px; left: 0; right: 0; max-width: 532px; }
+
+.habit-teaser { cursor: pointer; }
+.habit-teaser-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.habit-teaser .chev { font-size: 28px; color: var(--green); line-height: 1; }
+.habit-mini { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.pill.green { background: #e8f5ec; color: #166b30; }
+.pill.blue { background: #e8eefc; color: #1e3a8a; }
+.pill.orange { background: #fff1e6; color: #9a3412; }
+.pill.purple { background: #f3e8ff; color: #6b21a8; }
+.habit-mini .pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 99px; font-size: 12px; }
+.fill-card .bar, .habit-card .bar { height: 6px; background: var(--line); border-radius: 99px; margin-top: 8px; overflow: hidden; }
+.fill-card .bar i, .habit-card .bar i { display: block; height: 100%; background: var(--green); border-radius: 99px; }
+.fill-row { margin: 4px 0 2px; font-size: 20px; }
+.habit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.habit-card { text-align: left; background: var(--card); border-radius: var(--r); padding: 14px; box-shadow: 0 1px 2px var(--line); min-height: 148px; display: flex; flex-direction: column; }
+.habit-card small { font-weight: 700; font-size: 13px; }
+.habit-card b { font-size: 32px; font-weight: 800; line-height: 1.1; margin: 6px 0 4px; }
+.habit-card span { color: var(--muted); font-size: 12px; flex: 1; }
+.habit-card.green { background: #eef8f1; } .habit-card.green b, .habit-card.green small { color: #166b30; } .habit-card.green .bar i { background: #1e8c3f; }
+.habit-card.blue { background: #eef2fb; } .habit-card.blue b, .habit-card.blue small { color: #1e3a8a; } .habit-card.blue .bar i { background: #3b82f6; }
+.habit-card.orange { background: #fff6ed; } .habit-card.orange b, .habit-card.orange small { color: #9a3412; } .habit-card.orange .bar i { background: #f97316; }
+.habit-card.purple { background: #f7edfc; } .habit-card.purple b, .habit-card.purple small { color: #6b21a8; } .habit-card.purple .bar i { background: #a855f7; }
+.habit-item { display: flex; gap: 12px; align-items: flex-start; }
+.habit-item .thumb { width: 48px; height: 48px; border-radius: 10px; flex: none; display: grid; place-items: center; background: var(--mint); }
+.habit-item-body { flex: 1; min-width: 0; }
+.habit-item-body .move { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.habit-item-body .chip { font-size: 12px; padding: 5px 9px; }
+.menu button.mrow { width: 100%; text-align: left; }
+.hist { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.welcome { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px 24px 80px; background: linear-gradient(180deg, #e8f5ec, #f2f5f3 55%, #fff); }
+.welcome h1 { font-size: 28px; font-weight: 800; letter-spacing: -.3px; margin: 22px 0 10px; max-width: 280px; }
+.welcome p { color: var(--muted); margin-bottom: 28px; max-width: 300px; }
+.welcome .btn-primary { min-width: 220px; }

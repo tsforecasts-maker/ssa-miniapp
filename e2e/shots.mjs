@@ -21,6 +21,7 @@ await page.route("**/functions/v1/ssa-miniapp-api/**", (r) => {
 });
 await page.addInitScript(() => {
   window.Telegram = { WebApp: { initData: "mock=1", initDataUnsafe: { user: { id: 1, first_name: "Анна" } }, ready() {}, expand() {}, close() {}, openLink() {}, setHeaderColor() {}, BackButton: { show() {}, hide() {}, onClick() {}, offClick() {} } } };
+  try { localStorage.setItem("ssa:welcome:v1", "1"); } catch {}
 });
 const shot = async (name) => { await page.waitForTimeout(250); await page.screenshot({ path: `${outDir}/${name}.png` }); console.log("shot", name); };
 const tab = (t) => page.locator(".tabbar button", { hasText: t }).click();
@@ -100,6 +101,17 @@ if (await page.locator(".btn-mix").count()) {
 await tab("Корзина");
 await page.waitForSelector(".cta-bar");
 await shot("16_cart");
+await tab("Главная");
+await page.waitForSelector(".habit-teaser");
+await page.locator(".habit-teaser").click();
+await page.waitForSelector(".habit-grid");
+await shot("18_how_i_shop");
+await tab("Профиль");
+await page.waitForSelector(".prof");
+await shot("19_profile");
+await page.goto(base.replace(/\/?$/, "/") + "?welcome=1", { waitUntil: "networkidle" });
+await page.waitForSelector(".welcome");
+await shot("20_welcome");
 await page.waitForTimeout(600);
 console.log("PUT calls:", JSON.stringify(puts));
 await browser.close();

@@ -2,6 +2,7 @@ import { Header } from "../components/ui";
 import { CategoryList } from "./Catalog";
 import { money, when, goodsWord } from "../fmt";
 import { freshness } from "../lib/compare";
+import { GROUP_META, GROUPS, countsOf } from "../lib/habits";
 import { boot, data, go, refreshing, result } from "../store";
 
 export function Home() {
@@ -37,6 +38,24 @@ export function Home() {
             <small>Отметьте, что вы обычно покупаете, и я сравню цены в магазинах района.</small>
             <button class="btn-primary wide" onClick={() => go({ tab: "catalog" })}>Выбрать товары</button>
           </>
+        )}
+      </section>
+
+
+      <section class="card habit-teaser" onClick={() => go({ tab: "home", habits: true })} role="button">
+        <div class="habit-teaser-top">
+          <div>
+            <b>Как я покупаю</b>
+            <small>{boot.value!.habits ? `Заполнено на ${boot.value!.habits.fill_pct}%` : "Соберите картину по чекам и списку"}</small>
+          </div>
+          <span class="chev">›</span>
+        </div>
+        {boot.value!.habits && (
+          <div class="habit-mini">
+            {GROUPS.map((g) => (
+              <span class={`pill ${GROUP_META[g].color}`}><b>{countsOf(boot.value!.habits)[g]}</b> {GROUP_META[g].title}</span>
+            ))}
+          </div>
         )}
       </section>
 

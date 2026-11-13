@@ -1,3 +1,4 @@
+import type { Habits } from "./lib/habits";
 import type { CatalogItem, HouseholdInfo, Offer, Pick, Rules } from "./lib/compare";
 import { initData } from "./tg";
 
@@ -9,6 +10,7 @@ export interface Boot {
   role: string; household_id: number; synced_at: string | null;
   catalog: { categories: { id: number; name: string }[]; items: CatalogItem[] };
   offers: Offer[]; rules: Rules; household: HouseholdInfo; products: Pick[];
+  habits: Habits | null; groups: Record<string, string>;
 }
 
 export class ApiError extends Error {
@@ -35,3 +37,5 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
 export const bootstrap = () => call<Boot>("GET", "bootstrap");
 export const putProduct = (catalog_id: number, qty: number, brand: string | null, rule: number | null = 2) =>
   call<{ ok: boolean }>("PUT", "products", { catalog_id, qty, brand, rule });
+export const putGroup = (catalog_id: number, grp: string) =>
+  call<{ ok: boolean }>("PUT", "groups", { catalog_id, grp });
