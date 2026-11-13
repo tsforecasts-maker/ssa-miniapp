@@ -9,7 +9,7 @@ interface WebApp {
   setHeaderColor?(c: string): void; setBackgroundColor?(c: string): void;
   BackButton?: { show(): void; hide(): void; onClick(f: () => void): void; offClick(f: () => void): void };
   HapticFeedback?: { impactOccurred(s: string): void; notificationOccurred(s: string): void };
-  onEvent?(e: string, f: () => void): void;
+  onEvent?(e: string, f: () => void): void; offEvent?(e: string, f: () => void): void;
 }
 declare global { interface Window { Telegram?: { WebApp?: WebApp } } }
 
@@ -31,3 +31,15 @@ export function openLink(url: string): void {
   if (wa?.openLink) wa.openLink(url); else window.open(url, "_blank", "noopener");
 }
 export const tgUser = () => wa?.initDataUnsafe?.user;
+
+/** Fire when the Mini App is shown again (return from a store app / tab). */
+export function onAppVisible(fn: () => void): () => void {
+  const vis = () => { if (document.visibilityState === "visible") fn(); };
+  document.addEventListener("visibilitychange", vis);
+  const ev = () => fn();
+  try { wa?.onEvent?.("activated", ev); } catch { /* older clients */ }
+  return () => {
+    document.removeEventListener("visibilitychange", vis);
+    try { wa?.offEvent?.("activated", ev); } catch { /* ignore */ }
+  };
+}

@@ -82,6 +82,11 @@ await page.waitForSelector(".chain-card");
 await page.locator(".chain-card").first().click();
 await page.waitForSelector(".pack-row");
 await shot("14_checklist_single");
+await page.locator(".pack-row .btn-shop").first().click();
+await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+await page.waitForSelector(".pack-row.next");
+await page.waitForTimeout(300);
+await shot("17_checklist_next");
 await page.locator("header .back").click();
 await page.waitForSelector(".btn-mix, .chain-card");
 if (await page.locator(".btn-mix").count()) {
