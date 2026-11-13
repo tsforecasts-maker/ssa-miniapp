@@ -31,12 +31,13 @@ export function Cart() {
           const o = offerOf(it.id);
           return (
             <div class="row" key={it.id}>
-              <Thumb cat={it.cat} size={46} />
+              <Thumb cat={it.cat} src={it.img} size={46} alt={it.name} />
               <div class="grow">
                 <b class="rname">{it.name}</b>
                 <small class="muted">{[it.size, it.brand ?? it.catalogBrand].filter(Boolean).join(" · ")}</small>
-                {o && ref ? <small class={`st ${o.basis}`}>{[o.basis === "card" ? "по карте" : o.basis === "promo" ? "акция" : o.basis === "card_assumed" ? "цена по карте" : "", freshnessLabel(d.rules, ref.chain, o.at)].filter(Boolean).join(" · ")}</small>
+                {o && ref ? <small class={`st ${o.basis}`}>{[o.substitute ? "замена" : "", o.basis === "card" ? "по карте" : o.basis === "promo" ? "акция" : o.basis === "card_assumed" ? "цена по карте" : "", freshnessLabel(d.rules, ref.chain, o.at)].filter(Boolean).join(" · ")}</small>
                   : <small class="st none">{ref ? `нет в ${d.rules.chains.find((c) => c.code === ref.chain)?.in ?? ref.name}` : "нет цены в вашем районе"}</small>}
+                {it.suggestions && Object.values(it.suggestions)[0] && <small class="st">замена: {Object.values(it.suggestions)[0].brand || "аналог"} за {money(Object.values(it.suggestions)[0].line)}</small>}
               </div>
               <div class="right">
                 <Qty id={it.id} />

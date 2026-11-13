@@ -43,6 +43,39 @@ await tab("Корзина"); await shot("06_cart");
 await page.locator(".cta-bar .btn-primary").click(); await shot("07_where");
 await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await shot("08_where_bottom");
 await tab("Профиль"); await shot("09_profile");
+// step 2: photo tile, product sheet with the assistant rule, cart with photos
+await tab("Каталог");
+const photoTile = page.locator(".tile").filter({ has: page.locator("img.thumb") }).first();
+if (await page.locator("img.thumb").count() === 0) {
+  // open the first category that might have photos after a fresh load
+  if (await page.locator(".cat").count()) await page.locator(".cat").first().click();
+}
+if (await page.locator("img.thumb").count() === 0) {
+  // walk categories until a photo appears
+  const cats = page.locator(".cat");
+  const n = await cats.count();
+  for (let i = 0; i < n; i++) {
+    await tab("Каталог");
+    await cats.nth(i).click();
+    if (await page.locator("img.thumb").count()) break;
+  }
+}
+if (await page.locator("img.thumb").count()) {
+  const tile = page.locator(".tile").filter({ has: page.locator("img.thumb") }).first();
+  await tile.scrollIntoViewIfNeeded();
+  const img = tile.locator("img.thumb");
+  await img.evaluate((el) => el.complete && el.naturalWidth > 0 || new Promise((res) => { el.onload = () => res(true); el.onerror = () => res(false); }));
+  await shot("10_tile_photo");
+  await tile.locator(".tname").click();
+} else {
+  await page.locator(".tile").first().locator(".tname").click();
+  await shot("10_tile_photo");
+}
+await page.waitForSelector(".sheet .rules");
+await page.locator(".sheet .rule-note").scrollIntoViewIfNeeded();
+await shot("11_product_sheet_rule");
+await page.locator(".sheet .btn-primary").click();
+await tab("Корзина"); await shot("12_cart");
 await page.waitForTimeout(600);
 console.log("PUT calls:", JSON.stringify(puts));
 await browser.close();

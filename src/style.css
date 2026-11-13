@@ -148,3 +148,12 @@ main { padding: 0 14px 150px; max-width: 560px; margin: 0 auto; }
 .empty .big { font-size: 56px; margin-bottom: 10px; } .empty h2 { margin-bottom: 8px; } .empty p { color: var(--muted); margin-bottom: 18px; }
 .splash { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; height: 80vh; color: var(--muted); }
 .toast { position: fixed; left: 16px; right: 16px; bottom: 84px; background: #1d2b22; color: #fff; padding: 11px 14px; border-radius: 12px; z-index: 30; text-align: center; font-size: 14px; }
+
+.thumb.photo { object-fit: contain; background: #fff; padding: 4px; border: 1px solid var(--line); }
+.rules { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 10px; }
+.rule { display: flex; align-items: center; gap: 10px; text-align: left; border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--card); }
+.rule.on { border-color: var(--green); background: var(--mint); }
+.rule .radio { color: var(--green); width: 18px; font-size: 16px; flex: none; }
+.rule i { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; }
+.rule.on i { border-color: var(--green); background: var(--green); color: #fff; }
+.rule-note { margin-top: 0; }

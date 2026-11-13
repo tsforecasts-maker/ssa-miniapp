@@ -33,5 +33,5 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
 }
 
 export const bootstrap = () => call<Boot>("GET", "bootstrap");
-export const putProduct = (catalog_id: number, qty: number, brand: string | null) =>
-  call<{ ok: boolean }>("PUT", "products", { catalog_id, qty, brand });
+export const putProduct = (catalog_id: number, qty: number, brand: string | null, rule: number | null = 2) =>
+  call<{ ok: boolean }>("PUT", "products", { catalog_id, qty, brand, rule });

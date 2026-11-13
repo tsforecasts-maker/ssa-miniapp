@@ -10,7 +10,7 @@ function fromPrice(item: CatalogItem): number | null {
   const d = data.value;
   if (!d) return null;
   const p = pickMap.value.get(item.id);
-  const [it] = buildItems(d, [{ catalog_id: item.id, qty: 1, brand: p?.brand ?? null }]);
+  const [it] = buildItems(d, [{ catalog_id: item.id, qty: 1, brand: p?.brand ?? null, rule: p?.rule }]);
   const lines = Object.values(it.offers).map((o) => o.line);
   return lines.length ? Math.min(...lines) : null;
 }
@@ -20,7 +20,7 @@ export function ProductTile({ item }: { item: CatalogItem }) {
   const p = pickMap.value.get(item.id);
   return (
     <div class={`tile ${p ? "picked" : ""}`} onClick={() => { sheet.value = item.id; }}>
-      <Thumb cat={item.cat} size={64} />
+      <Thumb cat={item.cat} src={item.img} size={64} alt={item.name} />
       <div class="tname">{item.name}</div>
       <small class="muted">{[item.size, p?.brand].filter(Boolean).join(" · ") || "\u00a0"}</small>
       <div class="tprice">{price !== null ? <>от <b>{money(price)}</b></> : <span class="muted">нет цены</span>}</div>

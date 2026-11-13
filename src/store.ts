@@ -54,15 +54,19 @@ export function flash(msg: string): void {
 // ---- picks: optimistic update, one pending PUT per product (last write wins) ----
 const timers = new Map<number, number>();
 
-export function setPick(id: number, qty: number, brand?: string | null): void {
+export function setPick(id: number, qty: number, brand?: string | null, rule?: number): void {
   const cur = pickMap.value.get(id);
-  const next: Pick | null = qty <= 0 ? null : { catalog_id: id, qty, brand: brand === undefined ? cur?.brand ?? null : brand };
+  const next: Pick | null = qty <= 0 ? null : {
+    catalog_id: id, qty,
+    brand: brand === undefined ? cur?.brand ?? null : brand,
+    rule: rule === undefined ? cur?.rule ?? 2 : rule,
+  };
   picks.value = [...picks.value.filter((p) => p.catalog_id !== id), ...(next ? [next] : [])];
   haptic();
   clearTimeout(timers.get(id));
   timers.set(id, window.setTimeout(async () => {
     timers.delete(id);
-    try { await putProduct(id, next ? next.qty! : 0, next?.brand ?? null); }
+    try { await putProduct(id, next ? next.qty! : 0, next?.brand ?? null, next?.rule ?? 2); }
     catch { flash("Не удалось сохранить, попробуйте ещё раз"); void load(true); }
   }, 350));
 }

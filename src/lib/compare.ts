@@ -25,6 +25,7 @@ export interface CatalogItem {
   brand: string | null;
   size: string | null;
   brands: string[];
+  img?: string | null;
 }
 export interface ChainInfo { code: string; name: string; in: string; url: string | null }
 export interface DeliveryRule {
@@ -40,7 +41,10 @@ export interface HouseholdInfo {
   stores: Record<string, string>; cards: Record<string, boolean>;
   bank_cards: { name: string; percent: number }[]; cashback_pct: number;
 }
-export interface Pick { catalog_id: number; qty: number | null; brand: string | null }
+export type AssistantRule = 1 | 2 | 3;
+export const DEFAULT_RULE: AssistantRule = 2;
+export function asRule(r?: number | null): AssistantRule { return r === 1 || r === 3 ? r : 2; }
+export interface Pick { catalog_id: number; qty: number | null; brand: string | null; rule?: number }
 export interface Data { items: CatalogItem[]; offers: Offer[]; rules: Rules; household: HouseholdInfo }
 
 export const PEREKRESTOK_NOTE = "данные могут быть старше";
@@ -135,12 +139,13 @@ export function effectivePrice(o: { co: boolean; pr: number; rg: number | null; 
 export interface PricedOffer {
   chain: string; title: string; brand: string | null; qty: number; // qty = packs
   unit: number; basis: Basis; regularLine: number; line: number;
-  at: string | null; url: string | null;
+  at: string | null; url: string | null; substitute: boolean;
 }
 
 export interface CartItem {
   id: number; name: string; qty: number; brand: string | null; catalogBrand: string | null;
-  size: string | null; cat: number; offers: Record<string, PricedOffer>;
+  size: string | null; cat: number; img: string | null; rule: AssistantRule;
+  offers: Record<string, PricedOffer>; suggestions: Record<string, PricedOffer>;
 }
 export interface Basket {
   chain: string; name: string; goods: number; fee: number; cashback: number; total: number; n: number;
@@ -163,7 +168,7 @@ function pricedOffer(o: Offer, qty: number, hasCard: boolean, wanted: string | n
   const reg = Math.max(o.rg ?? ep.price, ep.price);
   return {
     chain: o.c, title: o.t ?? "", brand: o.b, qty: packs, unit: ep.price, basis: ep.basis,
-    regularLine: r2(reg * packs), line: r2(ep.price * packs), at: o.at, url: o.u,
+    regularLine: r2(reg * packs), line: r2(ep.price * packs), at: o.at, url: o.u, substitute: false,
   };
 }
 
@@ -181,15 +186,36 @@ export function buildItems(d: Data, picks: Pick[]): CartItem[] {
     const sample = rows[0];
     const usual = (tgt ? amount(tgt[0], tgt[1]) : null) ?? (sample ? amount(sample.wv, sample.wu) : null);
     const wanted = p.brand || it.brand;
-    const best: Record<string, PricedOffer> = {};
+    const rule = asRule(p.rule);
+    const preferred: Record<string, PricedOffer> = {};
+    const anyOk: Record<string, PricedOffer> = {};
     for (const o of rows) {
       if (o.st === false) continue;
-      const po = pricedOffer(o, qty, !!d.household.cards[o.c], wanted, usual);
-      if (!po) continue;
-      const prev = best[o.c];
-      if (!prev || po.line < prev.line) best[o.c] = po;
+      const card = !!d.household.cards[o.c];
+      const poAny = pricedOffer(o, qty, card, null, usual);
+      const poWant = pricedOffer(o, qty, card, wanted, usual);
+      if (poAny && (!anyOk[o.c] || poAny.line < anyOk[o.c].line)) anyOk[o.c] = poAny;
+      if (poWant && (!preferred[o.c] || poWant.line < preferred[o.c].line)) preferred[o.c] = poWant;
     }
-    out.push({ id: it.id, name: it.name, qty, brand: p.brand, catalogBrand: it.brand, size: it.size, cat: it.cat, offers: best });
+    const best: Record<string, PricedOffer> = {};
+    const suggestions: Record<string, PricedOffer> = {};
+    if (!wanted || rule === 3) {
+      for (const [ch, o] of Object.entries(anyOk)) {
+        const isSub = !!(wanted && !brandMatches(wanted, o.brand, o.title));
+        best[ch] = { ...o, substitute: isSub };
+      }
+    } else {
+      for (const [ch, o] of Object.entries(preferred)) best[ch] = { ...o, substitute: false };
+      if (rule === 2) {
+        for (const [ch, o] of Object.entries(anyOk)) {
+          if (brandMatches(wanted, o.brand, o.title)) continue;
+          const pref = preferred[ch];
+          if (!pref || o.line + 0.005 < pref.line) suggestions[ch] = { ...o, substitute: true };
+        }
+      }
+    }
+    out.push({ id: it.id, name: it.name, qty, brand: p.brand, catalogBrand: it.brand, size: it.size, cat: it.cat,
+      img: it.img ?? null, rule, offers: best, suggestions });
   }
   out.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
   return out;

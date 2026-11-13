@@ -10,8 +10,8 @@ export function ChainBadge({ code, name, size = 34 }: { code: string; name: stri
   );
 }
 
-export function Thumb({ cat, size = 56 }: { cat: number; size?: number }) {
-  // photos arrive in step 2 (Open Food Facts by barcode); until then a category icon placeholder
+export function Thumb({ cat, src, size = 56, alt = "" }: { cat: number; src?: string | null; size?: number; alt?: string }) {
+  if (src) return <img class="thumb photo" src={src} alt={alt} width={size} height={size} />;
   return <span class="thumb" style={{ width: size, height: size, fontSize: size * 0.5 }}>{iconOf(cat)}</span>;
 }
 
