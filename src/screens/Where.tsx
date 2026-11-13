@@ -1,8 +1,9 @@
 import { ChainBadge, Header } from "../components/ui";
 import { money, when } from "../fmt";
 import { DISCLAIMER, goodsWord, openChains, PEREKRESTOK_NOTE, type Basket } from "../lib/compare";
-import { openLink } from "../tg";
-import { data, go, result } from "../store";
+import { data, go, result, type PackView } from "../store";
+
+const openPack = (pack: PackView) => go({ tab: "cart", where: true, pack });
 
 function Fee({ b }: { b: Basket }) {
   if (b.fee === 0 && b.verified) return <>доставка бесплатно</>;
@@ -33,7 +34,8 @@ export function Where() {
 
       <div class="duo">
         {top2.map((s, i) => (
-          <section key={s.chain} class={`card chain-card ${i === 0 ? "best" : ""}`}>
+          <section key={s.chain} class={`card chain-card ${i === 0 ? "best" : ""}`}
+            role="button" onClick={() => openPack({ mode: "single", chain: s.chain })}>
             <div class="cc-top"><ChainBadge code={s.chain} name={s.name} /><b>{s.name}</b><small>{s.n} {goodsWord(s.n)}</small></div>
             <small>Общая стоимость</small>
             <h2>{money(s.total)}</h2>
@@ -75,15 +77,25 @@ export function Where() {
         <section class="card">
           <h3>Другие магазины</h3>
           {rest.map((s) => (
-            <div class="srow" key={s.chain}><ChainBadge code={s.chain} name={s.name} size={26} />
+            <div class="srow" key={s.chain} role="button" onClick={() => openPack({ mode: "single", chain: s.chain })}>
+              <ChainBadge code={s.chain} name={s.name} size={26} />
               <div class="grow"><b>{s.name}</b><small>{s.n} {goodsWord(s.n)}{s.missing.length ? `, не хватает ${s.missing.length}` : ""} · <Fee b={s} /></small></div>
               <b>{money(s.total)}</b></div>
           ))}
         </section>
       )}
 
+      {split && split.baskets.length >= 2 && (
+        <button class="btn-mix wide" type="button"
+          onClick={() => openPack({ mode: "mix" })}>
+          Оптимальный микс (купить в {split.baskets.length} магазинах)
+        </button>
+      )}
       {chains.map((c) => (
-        <button key={c.code} class="btn-primary wide open" onClick={() => c.url && openLink(c.url)}>Открыть в {c.in} <span>↗</span></button>
+        <button key={c.code} class="btn-primary wide open" type="button"
+          onClick={() => openPack({ mode: "single", chain: c.code })}>
+          Открыть в {c.in}
+        </button>
       ))}
       {r.cashbackPct > 0 && <p class="note">Кэшбэк {r.cashbackPct}% учтён в итоге (только на товары, не на доставку).</p>}
       {r.singles.some((s) => s.chain === "perekrestok") && <p class="note">Перекрёсток: {PEREKRESTOK_NOTE}.</p>}

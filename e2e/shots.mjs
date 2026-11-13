@@ -77,6 +77,24 @@ await page.locator(".sheet .rule-note").scrollIntoViewIfNeeded();
 await shot("11_product_sheet_rule");
 await page.locator(".sheet .btn-primary").click();
 await tab("Корзина"); await shot("12_cart");
+await page.locator(".cta-bar .btn-primary").click();
+await page.waitForSelector(".chain-card");
+await page.locator(".chain-card").first().click();
+await page.waitForSelector(".pack-row");
+await shot("14_checklist_single");
+await page.locator("header .back").click();
+await page.waitForSelector(".btn-mix, .chain-card");
+if (await page.locator(".btn-mix").count()) {
+  await page.locator(".btn-mix").click();
+  await page.waitForSelector(".pack-block, .pack-row");
+  await shot("15_checklist_mix");
+  await page.locator("header .back").click();
+} else {
+  await shot("15_checklist_mix");
+}
+await tab("Корзина");
+await page.waitForSelector(".cta-bar");
+await shot("16_cart");
 await page.waitForTimeout(600);
 console.log("PUT calls:", JSON.stringify(puts));
 await browser.close();

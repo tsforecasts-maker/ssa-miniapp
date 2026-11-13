@@ -27,6 +27,7 @@ export function startTelegram(): void {
 }
 export const haptic = (): void => { try { wa?.HapticFeedback?.impactOccurred("light"); } catch { /* ignore */ } };
 export function openLink(url: string): void {
+  if (!url.startsWith("https://")) return;
   if (wa?.openLink) wa.openLink(url); else window.open(url, "_blank", "noopener");
 }
 export const tgUser = () => wa?.initDataUnsafe?.user;

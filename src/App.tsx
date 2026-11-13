@@ -5,18 +5,24 @@ import { Cart } from "./screens/Cart";
 import { Catalog } from "./screens/Catalog";
 import { Home } from "./screens/Home";
 import { Profile } from "./screens/Profile";
+import { Pack } from "./screens/Pack";
 import { Where } from "./screens/Where";
 import { wa } from "./tg";
 import { go, picks, sheet, status, toast, view } from "./store";
 
 export function App() {
   const v = view.value, s = status.value;
-  const deep = (v.tab === "catalog" && v.cat !== undefined) || !!v.where;
+  const deep = (v.tab === "catalog" && v.cat !== undefined) || !!v.where || !!v.pack;
   useEffect(() => {
-    const back = () => { if (sheet.value !== null) sheet.value = null; else if (v.where) go({ tab: "cart" }); else go({ tab: "catalog" }); };
+    const back = () => {
+      if (sheet.value !== null) sheet.value = null;
+      else if (v.pack) go({ tab: "cart", where: true });
+      else if (v.where) go({ tab: "cart" });
+      else go({ tab: "catalog" });
+    };
     if (deep) { wa?.BackButton?.show(); wa?.BackButton?.onClick(back); } else wa?.BackButton?.hide();
     return () => wa?.BackButton?.offClick(back);
-  }, [deep, v.where, v.cat]);
+  }, [deep, v.where, v.pack, v.cat]);
 
   if (s === "loading") return <div class="splash"><span class="logo big">SSA</span><p>Загружаю цены…</p></div>;
   if (s === "forbidden") return <Empty icon="🔒" title="Доступ закрыт" text="Вас пока нет в списке закрытого тестирования. Напишите Сергею — он откроет доступ." />;
@@ -27,7 +33,7 @@ export function App() {
       <main>
         {v.tab === "home" && <Home />}
         {v.tab === "catalog" && <Catalog />}
-        {v.tab === "cart" && (v.where ? <Where /> : <Cart />)}
+        {v.tab === "cart" && (v.pack ? <Pack pack={v.pack} /> : v.where ? <Where /> : <Cart />)}
         {v.tab === "profile" && <Profile />}
       </main>
       <Sheet />

@@ -4,7 +4,8 @@ import { compare, type Data, type Pick } from "./lib/compare";
 import { haptic } from "./tg";
 
 export type Tab = "home" | "catalog" | "cart" | "profile";
-export type View = { tab: Tab; cat?: number; where?: boolean };
+export type PackView = { mode: "single"; chain: string } | { mode: "mix" };
+export type View = { tab: Tab; cat?: number; where?: boolean; pack?: PackView };
 
 const CACHE_KEY = "ssa:boot:v1";
 export const boot = signal<Boot | null>(null);

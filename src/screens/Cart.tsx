@@ -23,7 +23,7 @@ export function Cart() {
             <div><h2>{ref.name}</h2><b class="big-price">{money(ref.total)}</b></div>
             {saving >= 1 && <span class="pill">−{money(saving)} от обычной</span>}
           </div>
-          <small class="muted">товары {money(ref.goods)} + доставка {money(ref.fee)}{ref.cashback ? ` − кэшбэк ${money(ref.cashback)}` : ""}{ref.missing.length ? ` · не хватает: ${ref.missing.length}` : ""}</small>
+          <small class="muted">товары {money(ref.goods)} + доставка {money(ref.fee)}{ref.cashback ? ` − кэшбэк ${money(ref.cashback)}` : ""}</small>
         </section>
       ) : <section class="card"><b>По выбранным товарам пока нет цен в вашем районе.</b></section>}
       <section class="card list">
@@ -36,7 +36,7 @@ export function Cart() {
                 <b class="rname">{it.name}</b>
                 <small class="muted">{[it.size, it.brand ?? it.catalogBrand].filter(Boolean).join(" · ")}</small>
                 {o && ref ? <small class={`st ${o.basis}`}>{[o.substitute ? "замена" : "", o.basis === "card" ? "по карте" : o.basis === "promo" ? "акция" : o.basis === "card_assumed" ? "цена по карте" : "", freshnessLabel(d.rules, ref.chain, o.at)].filter(Boolean).join(" · ")}</small>
-                  : <small class="st none">{ref ? `нет в ${d.rules.chains.find((c) => c.code === ref.chain)?.in ?? ref.name}` : "нет цены в вашем районе"}</small>}
+                  : !ref ? <small class="muted">нет цены в вашем районе</small> : null}
                 {it.suggestions && Object.values(it.suggestions)[0] && <small class="st">замена: {Object.values(it.suggestions)[0].brand || "аналог"} за {money(Object.values(it.suggestions)[0].line)}</small>}
               </div>
               <div class="right">

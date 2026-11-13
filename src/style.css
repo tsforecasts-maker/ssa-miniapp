@@ -157,3 +157,17 @@ main { padding: 0 14px 150px; max-width: 560px; margin: 0 auto; }
 .rule i { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; }
 .rule.on i { border-color: var(--green); background: var(--green); color: #fff; }
 .rule-note { margin-top: 0; }
+
+.chain-card { cursor: pointer; }
+.srow[role="button"] { cursor: pointer; }
+.btn-mix { display: block; width: 100%; text-align: center; border: 1.5px solid var(--green); color: var(--green-d); background: var(--mint); border-radius: 14px; padding: 13px 18px; font-weight: 700; margin: 10px 0 0; }
+.pack-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.pack-row:last-child { border: 0; }
+.pack-row.on { background: linear-gradient(90deg, var(--mint), transparent 70%); margin: 0 -12px; padding-left: 12px; padding-right: 12px; border-radius: 10px; }
+.chk { flex: none; width: 24px; height: 24px; border: 1.5px solid var(--line); border-radius: 7px; background: var(--card); color: #fff; font-size: 14px; font-weight: 800; display: grid; place-items: center; }
+.pack-row.on .chk { background: var(--green); border-color: var(--green); }
+.pack-main { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; text-align: left; }
+.btn-shop { flex: none; border: 1.5px solid var(--green); color: var(--green-d); border-radius: 12px; padding: 8px 10px; font-weight: 650; font-size: 13px; white-space: nowrap; background: var(--card); }
+.pack-block { margin: 4px 0 6px; }
+.pack-foot { margin-top: 8px; padding-bottom: 8px; }
+.pack-foot .srow.total { border: 0; }
