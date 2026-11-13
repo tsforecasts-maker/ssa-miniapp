@@ -86,7 +86,7 @@ export function Sheet() {
           ))}
         </div>
         <p class="note shield rule-note">Выбор меняет правило поведения ассистента при сборке будущих корзин</p>
-        {item.img && <p class="note">Фото: Open Food Facts, CC BY-SA</p>}
+        {item.img && <p class="note">{item.img_attr || "Фото: Open Food Facts, CC BY-SA"}</p>}
         <div class="sheet-foot">
           <Qty id={id} add="Добавить в список" />
           <button class="btn-primary" onClick={close}>Готово</button>

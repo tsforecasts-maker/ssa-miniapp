@@ -66,6 +66,7 @@ if (await page.locator("img.thumb").count()) {
   const img = tile.locator("img.thumb");
   await img.evaluate((el) => el.complete && el.naturalWidth > 0 || new Promise((res) => { el.onload = () => res(true); el.onerror = () => res(false); }));
   await shot("10_tile_photo");
+  await shot("13_catalog_tiles");
   await tile.locator(".tname").click();
 } else {
   await page.locator(".tile").first().locator(".tname").click();

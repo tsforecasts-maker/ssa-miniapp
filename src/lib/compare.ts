@@ -26,6 +26,7 @@ export interface CatalogItem {
   size: string | null;
   brands: string[];
   img?: string | null;
+  img_attr?: string | null;
 }
 export interface ChainInfo { code: string; name: string; in: string; url: string | null }
 export interface DeliveryRule {
